@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechGear Hub - Premium Consumer Electronics</title>
+    <style>
+        /* CSS Variables for color scheme */
+        :root {
+            --navy: #1e3a8a;
+            --teal: #0d9488;
+            --white: #ffffff;
+            --light-gray: #f8fafc;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --hover-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #334155;
+            scroll-behavior: smooth;
+        }
+
+        /* Header: Logo and navigation bar with active state */
+        header {
+            background: var(--navy);
+            color: var(--white);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--teal);
+        }
+
+        /* Hero Section: Full-width banner */
+        .hero {
+            background: linear-gradient(135deg, var(--navy), var(--teal)),
+                        url('https://source.unsplash.com/random/1920x800/?technology');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            outline: none;
+        }
+
+        .cta-btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: var(--teal);
+            color: var(--white);
+            border: none;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Products Grid: Responsive grid with hover effects */
+        .products {
+            padding: 4rem 2rem;
+            background: var(--light-gray);
+        }
+
+        .products h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--navy);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .product-card h3 {
+            padding: 1rem;
+            font-size: 1.3rem;
+            color: var(--navy);
+        }
+
+        .price {
+            padding: 0 1rem 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .original {
+            text-decoration: line-through;
+            color: #64748b;
+            margin-right: 0.5rem;
+        }
+
+        .rating {
+            padding: 0 1rem 1rem;
+            color: #fbbf24;
+            font-size: 1.1rem;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 1rem;
+            background: var(--teal);
+            color: var(--white);
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .add-to-cart:hover, .add-to-cart.adding {
+            background: #0f766e;
+        }
+
+        .add-to-cart.loading::after {
+            content: ' ⏳';
+        }
+
+        /* Cart Sidebar: Toggleable overlay sidebar */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--white);
+            box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            z-index: 200;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .cart-item-details h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .qty-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .qty-btn {
+            background: var(--light-gray);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .cart-total {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--navy);
+            text-align: center;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 150;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .social {
+            margin-left: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            nav {
+                gap: 1rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .search-bar {
+                border-radius: 25px;
+                margin-bottom: 1rem;
+            }
+
+            .cta-btn {
+                border-radius: 25px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header: Sticky navigation with cart toggle -->
+    <header role="banner">
+        <div class="logo" aria-label="TechGear Hub">TechGear Hub</div>
+        <nav role="navigation" aria-label="Main navigation">
+            <a href="#home" class="nav-link active">Home</a>
+            <a href="#products" class="nav-link">Products</a>
+            <a href="#" class="nav-link cart-toggle" id="cartToggle" aria-label="Shopping cart">Cart (<span id="cartCount">0</span>)</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section: Promotional banner with search and CTA -->
+    <section id="home" class="hero" role="banner" aria-labelledby="hero-title">
+        <div class="hero-content">
+            <h1 id="hero-title">Discover Amazing Tech Deals!</h1>
+            <input type="search" class="search-bar" placeholder="Search products..." aria-label="Search products">
+            <button class="cta-btn" onclick="scrollToProducts()">Shop Now</button>
+        </div>
+    </section>
+
+    <!-- Products Grid: 12 cards in responsive grid -->
+    <section id="products" class="products" role="main" aria-labelledby="products-title">
+        <h2 id="products-title">Featured Products</h2>
+        <div class="products-grid">
+            <!-- Headphones -->
+            <article class="product-card" role="article">
+                <div class="product-image">
+                    <img src="https://sony.scene7.com/is/image/sonyglobalsolutions/WH1000XM6_Primary_image_Midnight_Blue?$primaryshotPreset$&fmt=png-alpha" alt="Sony WH-1000XM5 Wireless Headphones" loading="lazy">
+                </div>
+                <h3>Sony WH-1000XM5 Headphones</h3>
+                <div class="price"><span class="original">₹32,990</span> ₹24,990</div>
+                <div class="rating" aria-label="Rating: 4.8 out of 5">★★★★★</div>
+                <button class="add-to-cart" data-id="1" data-name="Sony WH-1000XM5 Headphones" data-price="24990" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSinfXUwUXzyB5hcyJyAaWNA9r5AHfYmgBAog&s" alt="Bose QuietComfort Headphones" loading="lazy">
+                </div>
+                <h3>Bose QuietComfort 45</h3>
+                <div class="price"><span class="original">₹29,900</span> ₹22,400</div>
+                <div class="rating">★★★★☆</div>
+                <button class="add-to-cart" data-id="2" data-name="Bose QuietComfort 45" data-price="22400" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFjCCm238mB8UyFYrj5ah4kY5FPWhqE9cfjQ&s" alt="Apple AirPods Pro" loading="lazy">
+                </div>
+                <h3>Apple AirPods Pro 2</h3>
+                <div class="price"><span class="original">₹26,900</span> ₹19,900</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="3" data-name="Apple AirPods Pro 2" data-price="19900" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <!-- Smartwatches -->
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/airpods-4-anc-select-202409_FMT_WHH?wid=752&hei=636&fmt=jpeg&qlt=90&.v=1725502639798" alt="Apple Watch Series 9" loading="lazy">
+                </div>
+                <h3>Apple Watch Series 9</h3>
+                <div class="price"><span class="original">₹44,900</span> ₹41,900</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="4" data-name="Apple Watch Series 9" data-price="41900" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80" alt="Samsung Galaxy Watch 6" loading="lazy">
+                </div>
+                <h3>Samsung Galaxy Watch 6</h3>
+                <div class="price"><span class="original">₹29,999</span> ₹26,499</div>
+                <div class="rating">★★★★☆</div>
+                <button class="add-to-cart" data-id="5" data-name="Samsung Galaxy Watch 6" data-price="26499" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://www.shutterstock.com/image-photo/shenzhen-china-july-2023-galaxy-260nw-2341360407.jpg" alt="Fitbit Versa 4" loading="lazy">
+                </div>
+                <h3>Fitbit Versa 4</h3>
+                <div class="price"><span class="original">₹21,999</span> ₹17,999</div>
+                <div class="rating">★★★★☆</div>
+                <button class="add-to-cart" data-id="6" data-name="Fitbit Versa 4" data-price="17999" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <!-- Laptops -->
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://static0.pocketlintimages.com/wordpress/wp-content/uploads/wm/2023/06/apple-macbook-air-17.jpg?w=1600&h=900&fit=crop" alt="MacBook Air M2" loading="lazy">
+                </div>
+                <h3>MacBook Air M2</h3>
+                <div class="price"><span class="original">₹1,19,900</span> ₹1,09,900</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="7" data-name="MacBook Air M2" data-price="109900" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3HYwTmY0aMu6bybf1Gz0qWuC26YdZj4oEVw&s" alt="Dell XPS 13" loading="lazy">
+                </div>
+                <h3>Dell XPS 13</h3>
+                <div class="price"><span class="original">₹1,49,990</span> ₹1,29,990</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="8" data-name="Dell XPS 13" data-price="129990" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://dlcdnwebimgs.asus.com/files/media/8b74e7ee-b66a-4420-894e-3c3b980312ee/v2/img/design/color/strix-g-2022-green.png" alt="ASUS ROG Strix" loading="lazy">
+                </div>
+                <h3>ASUS ROG Strix G15</h3>
+                <div class="price"><span class="original">₹1,24,990</span> ₹1,09,990</div>
+                <div class="rating">★★★★☆</div>
+                <button class="add-to-cart" data-id="9" data-name="ASUS ROG Strix G15" data-price="109990" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <!-- Phone Cases -->
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://m.media-amazon.com/images/I/71Gh0VOQtlL.jpg" alt="Spigen iPhone Case" loading="lazy">
+                </div>
+                <h3>Spigen Rugged Armor Case</h3>
+                <div class="price"><span class="original">₹2,499</span> ₹1,799</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="10" data-name="Spigen Rugged Armor Case" data-price="1799" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc_-X_Jbjn6IEe0mPIG0eYcXEcWL-okU7uUQ&s" alt="OtterBox Defender Case" loading="lazy">
+                </div>
+                <h3>OtterBox Defender</h3>
+                <div class="price"><span class="original">₹4,999</span> ₹3,499</div>
+                <div class="rating">★★★★☆</div>
+                <button class="add-to-cart" data-id="11" data-name="OtterBox Defender" data-price="3499" aria-label="Add to cart">Add to Cart</button>
+            </article>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCWtH_pCp05SpJCvPMQWF8h3J67l60d9av-w&s" alt="Ringke Fusion Case" loading="lazy">
+                </div>
+                <h3>Ringke Fusion Case</h3>
+                <div class="price"><span class="original">₹1,799</span> ₹1,299</div>
+                <div class="rating">★★★★★</div>
+                <button class="add-to-cart" data-id="12" data-name="Ringke Fusion Case" data-price="1299" aria-label="Add to cart">Add to Cart</button>
+            </article>
+        </div>
+    </section>
+
+    <!-- Shopping Cart Sidebar: Persistent with localStorage -->
+    <aside class="cart-sidebar" id="cartSidebar" role="dialog" aria-labelledby="cart-title" aria-hidden="true">
+        <div class="cart-header">
+            <h3 id="cart-title">Shopping Cart</h3>
+            <button class="close-cart" aria-label="Close cart">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-total">
+            <p><strong>Total: ₹<span id="cartTotal">0</span></strong></p>
+            <button class="checkout-btn" onclick="checkout()">Checkout</button>
+        </div>
+    </aside>
+
+    <!-- Overlay for modal-like behavior -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Footer: Links and social icons -->
+    <footer role="contentinfo">
+        <div class="footer-links">
+            <a href="#about">About</a>
+            <a href="#privacy">Privacy</a>
+            <div class="social">
+                <a href="#" aria-label="Twitter">Twitter</a>
+                <a href="#" aria-label="Instagram">Instagram</a>
+            </div>
+        </div>
+        <p>&copy; 2025 TechGear Hub. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // JavaScript: Cart functionality with localStorage, toggles, smooth scroll, loading animation
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Initialize cart display
+        function updateCartDisplay() {
+            const count = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCount').textContent = count;
+            document.getElementById('cartTotal').textContent = cart.reduce((sum, item) => sum + (item.price * item.qty), 0).toLocaleString();
+            renderCartItems();
+        }
+
+        // Render cart items in sidebar
+        function renderCartItems() {
+            const container = document.getElementById('cartItems');
+            if (cart.length === 0) {
+                container.innerHTML = '<p>Your cart is empty.</p>';
+                return;
+            }
+            container.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <img src="https://source.unsplash.com/random/60x60/?${item.name.toLowerCase().split(' ')[0]}" alt="${item.name}" loading="lazy">
+                    <div class="cart-item-details">
+                        <h4>${item.name}</h4>
+                        <p>₹${item.price.toLocaleString()}</p>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button>
+                            <span>${item.qty}</span>
+                            <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add to cart with loading animation
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const btn = e.target;
+                const id = btn.dataset.id;
+                const name = btn.dataset.name;
+                const price = parseInt(btn.dataset.price);
+
+                btn.textContent = 'Adding... ⏳';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    const existing = cart.find(item => item.id == id);
+                    if (existing) {
+                        existing.qty++;
+                    } else {
+                        cart.push({ id, name, price, qty: 1 });
+                    }
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartDisplay();
+                    btn.textContent = 'Added!';
+                    setTimeout(() => {
+                        btn.textContent = 'Add to Cart';
+                        btn.disabled = false;
+                    }, 1000);
+                }, 800);
+            });
+        });
+
+        // Update quantity
+        function updateQty(id, delta) {
+            const item = cart.find(item => item.id == id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.id != id);
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartDisplay();
+            }
+        }
+
+        // Toggle cart sidebar
+        document.getElementById('cartToggle').addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleCart();
+        });
+
+        document.querySelector('.close-cart').addEventListener('click', toggleCart);
+        document.getElementById('overlay').addEventListener('click', toggleCart);
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            sidebar.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
+        }
+
+        // Utility functions
+        function scrollToProducts() {
+            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function checkout() {
+            if (cart.length === 0) return alert('Cart is empty!');
+            alert(`Proceeding to checkout with ₹${document.getElementById('cartTotal').textContent} total. Thanks for shopping!`);
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+            toggleCart();
+        }
+
+        // Nav active state on scroll (simple)
+        window.addEventListener('scroll', () => {
+            const sections = ['home', 'products'];
+            const links = document.querySelectorAll('.nav-link');
+            let current = '';
+            sections.forEach(section => {
+                const el = document.getElementById(section);
+                if (el.getBoundingClientRect().top < 100) {
+                    current = section;
+                }
+            });
+            links.forEach(link => link.classList.remove('active'));
+            document.querySelector(`[href="#${current}"]`)?.classList.add('active');
+        });
+
+        // Initial load
+        updateCartDisplay();
+    </script>
+</body>
+</html>
